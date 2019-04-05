@@ -13,6 +13,7 @@ clone o repositório e na raiz utilize o comando, para instalar os modulos
 ```sh
 npm install
 ```
+após utilize um dos dois comandos para iniciar o server
 
 ```sh
 npm start
