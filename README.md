@@ -12,10 +12,10 @@ API para gerenciamento de horários de uma clínica
 Clone o repositorio 
 
 ```sh
-    git clone https://github.com/leosena777/api-node.git  node-api-atendimentos;
+    git clone https://github.com/leosena777/api-node.git  node-api-atendimentos
 ```
 ```sh
-    cd node-api-atendimentos;
+    cd node-api-atendimentos
 ```
 
 Na raiz do projeto utilize o comando, para instalar os modulos
