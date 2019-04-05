@@ -9,7 +9,15 @@ API para gerenciamento de horários de uma clínica
 
 ### instalação
 
-clone o repositório e na raiz utilize o comando, para instalar os modulos
+Clone o repositorio 
+
+```sh
+    git clone https://github.com/leosena777/api-node.git  node-api-atendimentos;
+    cd node-api-atendimentos;
+```
+
+Na raiz do projeto utilize o comando, para instalar os modulos
+
 ```sh
 npm install
 ```
