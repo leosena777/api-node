@@ -79,11 +79,16 @@ class AtendimentosRouter extends Router{
             var filtroRegras = [];
             this.regras.forEach(regra => {
 
-                
-                var dataValor = regra.valor.split('-');
-                dataValor = new Date( dataValor[2]+'-'+ dataValor[1]+ '-' + dataValor[0] );
+                if(regra.valor != null){
+                    var dataValor = regra.valor.split('-');
+                    dataValor = new Date( dataValor[2]+'-'+ dataValor[1]+ '-' + dataValor[0] );
+                }
 
                 if(dataValor != "Invalid Date"){
+
+
+                        
+
                      if(regra.tipo == "dia" && dataValor <= dataFinal && dataValor >= dataInicial){
                         let existe : any = false;                        
                         console.log(filtroRegras);
