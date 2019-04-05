@@ -1,0 +1,28 @@
+{
+  "name": "api-node",
+  "version": "1.0.0",
+  "description": "API para gerenciamento de horários de uma clínica",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./dist/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leosena777/api-node.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leosena777/api-node/issues"
+  },
+  "homepage": "https://github.com/leosena777/api-node#readme",
+  "dependencies": {
+    "restify": "^8.2.0",
+    "save": "^2.3.3"
+  },
+  "devDependencies": {
+    "@types/restify": "^7.2.9",
+    "nodemon": "^1.18.10"
+  }
+}
