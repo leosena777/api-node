@@ -1,6 +1,8 @@
 import { Router } from '../common/router';
 import * as restify from 'restify';
 import * as fs from 'fs';
+import * as moment from 'moment';
+
 
 
 class AtendimentosRouter extends Router{
@@ -11,6 +13,7 @@ class AtendimentosRouter extends Router{
     
     applyRoutes(appliction: restify.Server){        
 
+        moment().format();
 
         //Leitura de regras.json
         fs.readFile( this.pathRegras , "utf8", (err, data) => {
@@ -79,47 +82,101 @@ class AtendimentosRouter extends Router{
             var filtroRegras = [];
             this.regras.forEach(regra => {
 
-                if(regra.valor != null){
-                    var dataValor = regra.valor.split('-');
-                    dataValor = new Date( dataValor[2]+'-'+ dataValor[1]+ '-' + dataValor[0] );
-                }
 
-                if(dataValor != "Invalid Date"){
+                switch(regra.tipo){
 
+                case 'diariamente':
+                // diariamente                           
 
-                        
-
-                     if(regra.tipo == "dia" && dataValor <= dataFinal && dataValor >= dataInicial){
-                        let existe : any = false;                        
-                        console.log(filtroRegras);
-                        
-                        filtroRegras.forEach(( filtroTeste, index )=> {
-                            
-                            if( filtroTeste != undefined && filtroTeste.day == regra.valor){
-                                existe = index;
-                                return;
-                            }
-
-                        });                      
-
-                        //existe esse dia
-                        if(existe !== false){                            
-                            filtroRegras[existe].intervals.push( {start: regra.horario_inicio , end: regra.horario_fim } );                            
-                            
-                        }else if(existe === false){
-                            //não existe esse dia
-                            var filtrado: any = {};
-                            filtrado.day = regra.valor; 
-                            filtrado.intervals = [];
-
-                            filtrado.intervals.push({ start: regra.horario_inicio , end: regra.horario_fim });                            
-                            filtroRegras.push(filtrado); 
-                        }
-                     }  
-                }             
                 
+
+                var mInicial = moment(dataInicial);
+                var mFinal   = moment(dataFinal);
+
+                var diffDays = mFinal.diff(mInicial, 'days');
+                
+                for(var i = 1; i<=diffDays+1;i++){
+                    var newDate : any = mInicial.clone();
+                    newDate.add(i, 'days');
+
+                    var dataFormata : string = newDate.format('DD-MM-YYYY');
+                    var existe :any = false;
+
+                    filtroRegras.forEach(( filtroTeste, index )=> {
+                            
+                        if( filtroTeste != undefined && filtroTeste.day == dataFormata ){
+                            existe = index;
+                            return;
+                        }
+
+                    });  
+
+                    //existe esse dia
+                    if(existe !== false){                            
+                        filtroRegras[existe].intervals.push( {start: regra.horario_inicio , end: regra.horario_fim } );                            
+                        
+                    }else if(existe === false){
+                        //não existe esse dia
+                        var filtrado: any = {};
+                        filtrado.day = newDate.format('DD-MM-YYYY'); 
+                        filtrado.intervals = [];
+
+                        filtrado.intervals.push({ start: regra.horario_inicio , end: regra.horario_fim });                            
+                        filtroRegras.push(filtrado); 
+                    }
+
+                    
+                    
+                
+                }
+                break;
+
+                    case 'dia':
+                                // dia                    
+                                var dataValor = regra.valor.split('-');
+                                dataValor = new Date( dataValor[2]+'-'+ dataValor[1]+ '-' + dataValor[0] );
+
+                                if(dataValor != "Invalid Date"){
+
+
+                                        
+
+                                    if(regra.tipo == "dia" && dataValor <= dataFinal && dataValor >= dataInicial){
+                                        let existe : any = false;                        
+                                        console.log(filtroRegras);
+                                        
+                                        filtroRegras.forEach(( filtroTeste, index )=> {
+                                            
+                                            if( filtroTeste != undefined && filtroTeste.day == regra.valor){
+                                                existe = index;
+                                                return;
+                                            }
+
+                                        });                      
+
+                                        //existe esse dia
+                                        if(existe !== false){                            
+                                            filtroRegras[existe].intervals.push( {start: regra.horario_inicio , end: regra.horario_fim } );                            
+                                            
+                                        }else if(existe === false){
+                                            //não existe esse dia
+                                            var filtrado: any = {};
+                                            filtrado.day = regra.valor; 
+                                            filtrado.intervals = [];
+
+                                            filtrado.intervals.push({ start: regra.horario_inicio , end: regra.horario_fim });                            
+                                            filtroRegras.push(filtrado); 
+                                        }
+                                    }  
+                                }             
+    
+                break;                
+                default:                                
+                }
                 
             });
+
+            
 
             resp.json(filtroRegras);
 

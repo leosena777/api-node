@@ -51,7 +51,8 @@ node .\dist\main.js
 
 | Plugin |
 | ------ |
-| Restify |
+| Restify|
+| Moment |
 
 
 ### Dependências desenvolvimento

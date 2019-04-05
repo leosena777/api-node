@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/leosena777/api-node#readme",
   "dependencies": {
+    "moment": "^2.24.0",
     "restify": "^8.2.0",
     "save": "^2.3.3"
   },

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const router_1 = require("../common/router");
 const fs = require("fs");
+const moment = require("moment");
 class AtendimentosRouter extends router_1.Router {
     constructor() {
         super(...arguments);
@@ -9,6 +10,7 @@ class AtendimentosRouter extends router_1.Router {
         this.regras = {};
     }
     applyRoutes(appliction) {
+        moment().format();
         //Leitura de regras.json
         fs.readFile(this.pathRegras, "utf8", (err, data) => {
             if (err) {
@@ -55,33 +57,67 @@ class AtendimentosRouter extends router_1.Router {
             dataFinal = new Date(dataFinal[2] + '-' + dataFinal[1] + '-' + dataFinal[0]);
             var filtroRegras = [];
             this.regras.forEach(regra => {
-                if (regra.valor != null) {
-                    var dataValor = regra.valor.split('-');
-                    dataValor = new Date(dataValor[2] + '-' + dataValor[1] + '-' + dataValor[0]);
-                }
-                if (dataValor != "Invalid Date") {
-                    if (regra.tipo == "dia" && dataValor <= dataFinal && dataValor >= dataInicial) {
-                        let existe = false;
-                        console.log(filtroRegras);
-                        filtroRegras.forEach((filtroTeste, index) => {
-                            if (filtroTeste != undefined && filtroTeste.day == regra.valor) {
-                                existe = index;
-                                return;
+                switch (regra.tipo) {
+                    case 'diariamente':
+                        // diariamente                           
+                        var mInicial = moment(dataInicial);
+                        var mFinal = moment(dataFinal);
+                        var diffDays = mFinal.diff(mInicial, 'days');
+                        for (var i = 1; i <= diffDays + 1; i++) {
+                            var newDate = mInicial.clone();
+                            newDate.add(i, 'days');
+                            var dataFormata = newDate.format('DD-MM-YYYY');
+                            var existe = false;
+                            filtroRegras.forEach((filtroTeste, index) => {
+                                if (filtroTeste != undefined && filtroTeste.day == dataFormata) {
+                                    existe = index;
+                                    return;
+                                }
+                            });
+                            //existe esse dia
+                            if (existe !== false) {
+                                filtroRegras[existe].intervals.push({ start: regra.horario_inicio, end: regra.horario_fim });
                             }
-                        });
-                        //existe esse dia
-                        if (existe !== false) {
-                            filtroRegras[existe].intervals.push({ start: regra.horario_inicio, end: regra.horario_fim });
+                            else if (existe === false) {
+                                //não existe esse dia
+                                var filtrado = {};
+                                filtrado.day = newDate.format('DD-MM-YYYY');
+                                filtrado.intervals = [];
+                                filtrado.intervals.push({ start: regra.horario_inicio, end: regra.horario_fim });
+                                filtroRegras.push(filtrado);
+                            }
                         }
-                        else if (existe === false) {
-                            //não existe esse dia
-                            var filtrado = {};
-                            filtrado.day = regra.valor;
-                            filtrado.intervals = [];
-                            filtrado.intervals.push({ start: regra.horario_inicio, end: regra.horario_fim });
-                            filtroRegras.push(filtrado);
+                        break;
+                    case 'dia':
+                        // dia                    
+                        var dataValor = regra.valor.split('-');
+                        dataValor = new Date(dataValor[2] + '-' + dataValor[1] + '-' + dataValor[0]);
+                        if (dataValor != "Invalid Date") {
+                            if (regra.tipo == "dia" && dataValor <= dataFinal && dataValor >= dataInicial) {
+                                let existe = false;
+                                console.log(filtroRegras);
+                                filtroRegras.forEach((filtroTeste, index) => {
+                                    if (filtroTeste != undefined && filtroTeste.day == regra.valor) {
+                                        existe = index;
+                                        return;
+                                    }
+                                });
+                                //existe esse dia
+                                if (existe !== false) {
+                                    filtroRegras[existe].intervals.push({ start: regra.horario_inicio, end: regra.horario_fim });
+                                }
+                                else if (existe === false) {
+                                    //não existe esse dia
+                                    var filtrado = {};
+                                    filtrado.day = regra.valor;
+                                    filtrado.intervals = [];
+                                    filtrado.intervals.push({ start: regra.horario_inicio, end: regra.horario_fim });
+                                    filtroRegras.push(filtrado);
+                                }
+                            }
                         }
-                    }
+                        break;
+                    default:
                 }
             });
             resp.json(filtroRegras);
