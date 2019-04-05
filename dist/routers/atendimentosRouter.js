@@ -5,7 +5,7 @@ const fs = require("fs");
 class AtendimentosRouter extends router_1.Router {
     constructor() {
         super(...arguments);
-        this.pathRegras = "./data/regras.json";
+        this.pathRegras = "./data/regrasDeAtendimento.json";
         this.regras = {};
     }
     applyRoutes(appliction) {
@@ -49,7 +49,40 @@ class AtendimentosRouter extends router_1.Router {
         });
         // Listar horários disponíveis dentro de um intervalo
         appliction.post('/horarios', (req, resp, next) => {
-            resp.json({ message: 'listar horarios' });
+            var dataInicial = req.body.data_inicial.split('-');
+            var dataFinal = req.body.data_final.split('-');
+            dataInicial = new Date(dataInicial[2] + '-' + dataInicial[1] + '-' + dataInicial[0]);
+            dataFinal = new Date(dataFinal[2] + '-' + dataFinal[1] + '-' + dataFinal[0]);
+            var filtroRegras = [];
+            this.regras.forEach(regra => {
+                var dataValor = regra.valor.split('-');
+                dataValor = new Date(dataValor[2] + '-' + dataValor[1] + '-' + dataValor[0]);
+                if (dataValor != "Invalid Date") {
+                    if (regra.tipo == "dia" && dataValor <= dataFinal && dataValor >= dataInicial) {
+                        let existe = false;
+                        console.log(filtroRegras);
+                        filtroRegras.forEach((filtroTeste, index) => {
+                            if (filtroTeste != undefined && filtroTeste.day == regra.valor) {
+                                existe = index;
+                                return;
+                            }
+                        });
+                        //existe esse dia
+                        if (existe !== false) {
+                            filtroRegras[existe].intervals.push({ start: regra.horario_inicio, end: regra.horario_fim });
+                        }
+                        else if (existe === false) {
+                            //não existe esse dia
+                            var filtrado = {};
+                            filtrado.day = regra.valor;
+                            filtrado.intervals = [];
+                            filtrado.intervals.push({ start: regra.horario_inicio, end: regra.horario_fim });
+                            filtroRegras.push(filtrado);
+                        }
+                    }
+                }
+            });
+            resp.json(filtroRegras);
         });
     }
     saveRegras() {

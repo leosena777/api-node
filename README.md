@@ -7,11 +7,11 @@ API para gerenciamento de horários de uma clínica
 
 [Acesse a documetação da API no postman ](https://documenter.getpostman.com/view/6317832/S1EJXMJo "Acesse a documetação da API no postman ")
 
-# tecnologia
+# Tecnologias utilizadas
   - Node
   - Typescript
 
-### instalação
+### Instalação
 
 Clone o repositorio 
 
