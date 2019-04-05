@@ -29,7 +29,47 @@ class AtendimentosRouter extends Router{
         appliction.post('/regras',(req,resp,next)=>{
             
                     var ultimoElemento : any = this.regras[this.regras.length - 1];
-                    console.log(ultimoElemento);
+
+                    var error : boolean = false;
+                    var messageError : any = [];
+                    switch(req.body){
+                        case '':
+                        case undefined: 
+                            error = true;
+                            messageError.push("Não foi possível processar a requisição");
+                        break;
+                        default:
+                       
+                             if(req.body.tipo == undefined){
+                                error = true;
+                                messageError.push('tipo');
+                            }
+
+                            if(req.body.valor == undefined){
+                                error = true;
+                                messageError.push('valor');
+                            }
+
+                            if(req.body.horario_inicio == undefined){
+                                error = true;
+                                messageError.push('horario inicial');
+                            }
+
+                            if(req.body.horario_fim == undefined){
+                                error = true;
+                                messageError.push('horario final');
+                            }
+
+                            
+                    }
+
+                    if(error === true){
+                        return resp.json({
+                            message: 'Você precisa definir um '+messageError.join(', ');
+                        })                        
+                    }
+                    
+
 
                     var data : any;            
                     data = req.body;
@@ -143,7 +183,7 @@ class AtendimentosRouter extends Router{
 
                                     if(regra.tipo == "dia" && dataValor <= dataFinal && dataValor >= dataInicial){
                                         let existe : any = false;                        
-                                        console.log(filtroRegras);
+                                        
                                         
                                         filtroRegras.forEach(( filtroTeste, index )=> {
                                             

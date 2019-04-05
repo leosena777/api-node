@@ -22,7 +22,37 @@ class AtendimentosRouter extends router_1.Router {
         //Cadastrar regras de horários para atendimento
         appliction.post('/regras', (req, resp, next) => {
             var ultimoElemento = this.regras[this.regras.length - 1];
-            console.log(ultimoElemento);
+            var error = false;
+            var messageError = [];
+            switch (req.body) {
+                case '':
+                case undefined:
+                    error = true;
+                    messageError.push("Não foi possível processar a requisição");
+                    break;
+                default:
+                    if (req.body.tipo == undefined) {
+                        error = true;
+                        messageError.push('tipo');
+                    }
+                    if (req.body.valor == undefined) {
+                        error = true;
+                        messageError.push('valor');
+                    }
+                    if (req.body.horario_inicio == undefined) {
+                        error = true;
+                        messageError.push('horario inicial');
+                    }
+                    if (req.body.horario_fim == undefined) {
+                        error = true;
+                        messageError.push('horario final');
+                    }
+            }
+            if (error === true) {
+                return resp.json({
+                    message: 'Você precisa definir um ' + messageError.join(', ')
+                });
+            }
             var data;
             data = req.body;
             data.id = ultimoElemento.id != undefined ? ultimoElemento.id + 1 : 1; // id auto increment
@@ -95,7 +125,6 @@ class AtendimentosRouter extends router_1.Router {
                         if (dataValor != "Invalid Date") {
                             if (regra.tipo == "dia" && dataValor <= dataFinal && dataValor >= dataInicial) {
                                 let existe = false;
-                                console.log(filtroRegras);
                                 filtroRegras.forEach((filtroTeste, index) => {
                                     if (filtroTeste != undefined && filtroTeste.day == regra.valor) {
                                         existe = index;
