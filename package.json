@@ -2,7 +2,7 @@
   "name": "api-node",
   "version": "1.0.0",
   "description": "API para gerenciamento de horários de uma clínica",
-  "main": "index.js",
+  "main": ".dist/main.js",
   "scripts": {
     "start": "nodemon ./dist/main.js"
   },
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/restify": "^7.2.9",
-    "nodemon": "^1.18.10"
+    "nodemon": "^1.18.10",
+    "typescript": "^3.4.1"
   }
 }
