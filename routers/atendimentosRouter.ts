@@ -36,7 +36,9 @@ class AtendimentosRouter extends Router{
                         case '':
                         case undefined: 
                             error = true;
-                            messageError.push("Não foi possível processar a requisição");
+                              return resp.json({
+                        message: "Não foi possível processar a requisição";
+                    })  
                         break;
                         default:
                        
@@ -102,7 +104,9 @@ class AtendimentosRouter extends Router{
                 case '':
                 case undefined: 
                     error = true;
-                    messageError.push("Não foi possível processar a requisição");
+                      return resp.json({
+                        message: "Não foi possível processar a requisição";
+                    })  
                 break;
                 default:
                
@@ -146,7 +150,41 @@ class AtendimentosRouter extends Router{
 
         // Listar horários disponíveis dentro de um intervalo
         appliction.post('/horarios',(req,resp,next)=>{
+
             
+    
+            var error : boolean = false;
+            var messageError : any = [];
+
+            switch(req.body){
+                case '':
+                case undefined: 
+                    error = true;                    
+                    return resp.json({
+                        message: "Não foi possível processar a requisição";
+                    })     
+
+                break;
+                default:
+               
+                     if(req.body.data_inicial == undefined){
+                        error = true;
+                        messageError.push('data inicial');
+                    }
+
+                    if(req.body.data_final == undefined){
+                        error = true;
+                        messageError.push('data final');
+                    }
+
+            }
+
+            if(error === true){
+                return resp.json({
+                    message: 'Você precisa definir um '+messageError.join(', ');
+                })                        
+            }
+
             var dataInicial = req.body.data_inicial.split('-');
             var dataFinal = req.body.data_final.split('-');
             

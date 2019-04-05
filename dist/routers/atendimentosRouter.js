@@ -28,7 +28,9 @@ class AtendimentosRouter extends router_1.Router {
                 case '':
                 case undefined:
                     error = true;
-                    messageError.push("Não foi possível processar a requisição");
+                    return resp.json({
+                        message: "Não foi possível processar a requisição"
+                    });
                     break;
                 default:
                     if (req.body.tipo == undefined) {
@@ -74,7 +76,9 @@ class AtendimentosRouter extends router_1.Router {
                 case '':
                 case undefined:
                     error = true;
-                    messageError.push("Não foi possível processar a requisição");
+                    return resp.json({
+                        message: "Não foi possível processar a requisição"
+                    });
                     break;
                 default:
                     if (req.params.id == undefined) {
@@ -106,6 +110,31 @@ class AtendimentosRouter extends router_1.Router {
         });
         // Listar horários disponíveis dentro de um intervalo
         appliction.post('/horarios', (req, resp, next) => {
+            var error = false;
+            var messageError = [];
+            switch (req.body) {
+                case '':
+                case undefined:
+                    error = true;
+                    return resp.json({
+                        message: "Não foi possível processar a requisição"
+                    });
+                    break;
+                default:
+                    if (req.body.data_inicial == undefined) {
+                        error = true;
+                        messageError.push('data inicial');
+                    }
+                    if (req.body.data_final == undefined) {
+                        error = true;
+                        messageError.push('data final');
+                    }
+            }
+            if (error === true) {
+                return resp.json({
+                    message: 'Você precisa definir um ' + messageError.join(', ')
+                });
+            }
             var dataInicial = req.body.data_inicial.split('-');
             var dataFinal = req.body.data_final.split('-');
             dataInicial = new Date(dataInicial[2] + '-' + dataInicial[1] + '-' + dataInicial[0]);
