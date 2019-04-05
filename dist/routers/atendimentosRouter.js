@@ -68,9 +68,34 @@ class AtendimentosRouter extends router_1.Router {
         });
         //Apagar regra de horário para atendimento
         appliction.post('/regras/:id', (req, resp, next) => {
+            var error = false;
+            var messageError = [];
+            switch (req.params) {
+                case '':
+                case undefined:
+                    error = true;
+                    messageError.push("Não foi possível processar a requisição");
+                    break;
+                default:
+                    if (req.params.id == undefined) {
+                        error = true;
+                        messageError.push('id');
+                    }
+            }
+            if (error === true) {
+                return resp.json({
+                    message: 'Você precisa definir um ' + messageError.join(', ')
+                });
+            }
+            var total = this.regras.length;
             this.regras = this.regras.filter(function (jsonObject) {
                 return jsonObject['id'] != req.params.id;
             });
+            if (total == this.regras.length) {
+                return resp.json({
+                    message: 'esta regra não existe'
+                });
+            }
             if (this.saveRegras()) {
                 resp.json({ message: 'Regra deletada com sucesso' });
             }
