@@ -13,6 +13,8 @@ Clone o repositorio
 
 ```sh
     git clone https://github.com/leosena777/api-node.git  node-api-atendimentos;
+```
+```sh
     cd node-api-atendimentos;
 ```
 
