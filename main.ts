@@ -1,7 +1,8 @@
 import {Server} from './server/server';
+import { atendimentosRouter } from './routers/atendimentosRouter';
 
 const server = new Server;
-server.bootstrap().then(server=>{
+server.bootstrap([atendimentosRouter]).then(server=>{
     //server rodando normalmente
     console.log('Server is listening on:', server.application.address()  );
 }).catch(error=>{

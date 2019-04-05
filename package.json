@@ -4,7 +4,7 @@
   "description": "API para gerenciamento de horários de uma clínica",
   "main": ".dist/main.js",
   "scripts": {
-    "start": "nodemon ./dist/main.js"
+    "iniciar": "nodemon ./dist/main.js"
   },
   "repository": {
     "type": "git",

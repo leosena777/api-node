@@ -16,7 +16,7 @@ npm install
 após utilize um dos dois comandos para iniciar o server
 
 ```sh
-npm start
+npm run iniciar
 ```
 
 ou 
