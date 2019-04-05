@@ -3,6 +3,10 @@
 
 API para gerenciamento de horários de uma clínica
 
+# Documentação da api
+
+[https://documenter.getpostman.com/view/6317832/S1EJXMJo](Acesse a documentação da API no postman "https://documenter.getpostman.com/view/6317832/S1EJXMJo")
+
 # tecnologia
   - Node
   - Typescript
