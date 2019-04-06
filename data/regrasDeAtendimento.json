@@ -1,1 +1,1 @@
-[{}]
+[{"tipo":"diariamente","horario_inicio":"08:00","horario_fim":"12:00","id":1},{"tipo":"dia","valor":"12-04-2019","horario_inicio":"20:40","horario_fim":"24:40","id":2},{"tipo":"semanalmente","valor":["segunda","sexta"],"horario_inicio":"09:30","horario_fim":"10:30","id":3}]

@@ -47,9 +47,11 @@ class AtendimentosRouter extends Router{
                                 messageError.push('tipo');
                             }
 
-                            if(req.body.valor == undefined){
-                                error = true;
-                                messageError.push('valor');
+                            if(req.body.tipo != 'diariamente'){
+                                if(req.body.valor == undefined){
+                                    error = true;
+                                    messageError.push('valor');
+                                }
                             }
 
                             if(req.body.horario_inicio == undefined){
@@ -238,6 +240,62 @@ class AtendimentosRouter extends Router{
                     }
 
                     
+                    
+                
+                }
+                break;
+                
+                case 'semanalmente':
+                // diariamente                           
+
+                var mInicial = moment(dataInicial);
+                var mFinal   = moment(dataFinal);
+
+                var diffDays = mFinal.diff(mInicial, 'days');
+                var semana:any = [];
+
+                semana[1] = 'segunda';
+                semana[2] =  'terca';
+                semana[3] = 'quarta' ;
+                semana[4]  = 'quinta' ;
+                semana[5]   = 'sexta';
+                semana[6]  = 'sabado';
+                semana[0] = 'domingo';                
+
+                for(var i = 1; i<=diffDays+1;i++){
+
+                    var newDate : any = mInicial.clone();
+                    newDate.add(i, 'days');
+
+                    if( regra.valor.indexOf( semana[ newDate.day() ] ) != -1){
+
+                    var dataFormata : string = newDate.format('DD-MM-YYYY');
+                    var existe :any = false;
+
+                    filtroRegras.forEach(( filtroTeste, index )=> {
+                            
+                        if( filtroTeste != undefined && filtroTeste.day == dataFormata ){
+                            existe = index;
+                            return;
+                        }
+
+                    });  
+
+                    //existe esse dia
+                    if(existe !== false){                            
+                        filtroRegras[existe].intervals.push( {start: regra.horario_inicio , end: regra.horario_fim } );                            
+                        
+                    }else if(existe === false){
+                        //não existe esse dia
+                        var filtrado: any = {};
+                        filtrado.day = newDate.format('DD-MM-YYYY'); 
+                        filtrado.intervals = [];
+
+                        filtrado.intervals.push({ start: regra.horario_inicio , end: regra.horario_fim });                            
+                        filtroRegras.push(filtrado); 
+                    }
+
+                }    
                     
                 
                 }
